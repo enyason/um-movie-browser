@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Movie-App</string>
+
+    <string name="error_message">Error loading page</string>
+    <string name="movie_poster">Movie Poster</string>
+    <string name="sort_by">Sort By</string>
+    <string name="most_popular">Most Popular</string>
+    <string name="rating">Rating</string>
+    <string name="movie_trailers">Movie Trailers</string>
+    <string name="movietrailer_name_is">movietrailer name is</string>
+    <string name="reviews">Reviews</string>
+    <string name="no_movie_trailers">No Movie Trailers</string>
+    <string name="no_movie_review">No Reviews</string>
+    <string name="favorites">Favorites</string>
+    <string name="no_favourite_added">No Favorite Added</string>
+    <string name="text_all">All</string>
+
+
+</resources>
