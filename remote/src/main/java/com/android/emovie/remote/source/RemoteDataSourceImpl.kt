@@ -18,7 +18,7 @@ class RemoteDataSourceImpl @Inject constructor(private val api: MovieApi) : Remo
                 with(movieRemote) {
                     MovieData(
                         adult,
-                        backdrop_path,
+                        backdrop_path.orEmpty(),
                         genre_ids,
                         id,
                         original_language,
