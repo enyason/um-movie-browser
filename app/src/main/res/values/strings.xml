@@ -14,6 +14,9 @@
     <string name="favorites">Favorites</string>
     <string name="no_favourite_added">No Favorite Added</string>
     <string name="text_all">All</string>
+    <string name="latest">Latest</string>
+    <string name="popular">Popular</string>
+    <string name="upcoming">Upcoming</string>
 
 
 </resources>

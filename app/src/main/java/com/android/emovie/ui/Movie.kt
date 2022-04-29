@@ -19,8 +19,7 @@ data class Movie(
     val title: String,
     val video: Boolean,
     val vote_average: Double,
-    val vote_count: Int,
-    val isFavorite: Boolean
+    val vote_count: Int
 ):Parcelable
 
 class MovieDiffUtil : DiffUtil.ItemCallback<Movie>() {

@@ -1,91 +1,69 @@
 package com.android.emovie.data.repositories
 
 import com.android.emovie.data.model.MovieData
-import com.android.emovie.data.sources.DataSourceFactory
+import com.android.emovie.data.sources.LocalDataSource
+import com.android.emovie.data.sources.RemoteDataSource
 import com.android.emovie.domain.models.MovieDomain
 import com.android.emovie.domain.repositories.MovieRepository
-import com.android.emovie.domain.usecases.GetMoviesRemoteUseCase
-import com.android.emovie.domain.usecases.GetMoviesUseCase
-import com.android.emovie.domain.usecases.UpdateMovieUseCase
-import io.reactivex.Completable
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.functions.Function
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
-    private val dataSourceFactory: DataSourceFactory
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource
 ) : MovieRepository {
 
-    override fun getMoviesFromRemote(params: GetMoviesRemoteUseCase.Params): Single<List<MovieDomain>> {
-        val remote = dataSourceFactory.remote().getMovies(params).doOnSuccess {
-            /**
-             * save to db
-             */
-            dataSourceFactory.local().saveMovies(it).subscribe()
-        }
+    override fun getLatestMovies(): Flow<List<MovieDomain>> {
+        return flow {
+            val localMovies = localDataSource.getLatestMovies().map { it.toDomain() }
+            if (localMovies.isNotEmpty()) emit(localMovies)
 
-        return remote.map {
-            it.map { movieData ->
-                with(movieData) {
-                    MovieDomain(
-                        adult,
-                        backdrop_path,
-                        genre_ids,
-                        id,
-                        original_language,
-                        original_title,
-                        overview,
-                        popularity,
-                        poster_path,
-                        release_date,
-                        title,
-                        video,
-                        vote_average,
-                        vote_count,
-                        isFavourite
-                    )
-                }
-            }
+            val remoteMovies = remoteDataSource.getLatestMovies()
+            localDataSource.saveLatestMovies(remoteMovies)
+            emit(remoteMovies.map { it.toDomain() })
         }
     }
 
-    override fun getMovies(): Observable<List<MovieDomain>> {
+    override fun getPopularMovies(): Flow<List<MovieDomain>> {
+        return flow {
+            val localMovies = localDataSource.getPopularMovies().map { it.toDomain() }
+            if (localMovies.isNotEmpty()) emit(localMovies)
 
-
-        val local = dataSourceFactory.local().getMovies()
-
-
-        return local.map {
-            it.map { movieData ->
-                with(movieData) {
-                    MovieDomain(
-                        adult,
-                        backdrop_path,
-                        genre_ids,
-                        id,
-                        original_language,
-                        original_title,
-                        overview,
-                        popularity,
-                        poster_path,
-                        release_date,
-                        title,
-                        video,
-                        vote_average,
-                        vote_count,
-                        isFavourite
-                    )
-                }
-            }
+            val remoteMovies = remoteDataSource.getPopularMovies()
+            localDataSource.savePopularMovies(remoteMovies)
+            emit(remoteMovies.map { it.toDomain() })
         }
     }
 
+    override fun getUpcomingMovies(): Flow<List<MovieDomain>> {
+        return flow {
+            val localMovies = localDataSource.getUpcomingMovies().map { it.toDomain() }
+            if (localMovies.isNotEmpty()) emit(localMovies)
 
-    override fun updateMovie(params: UpdateMovieUseCase.Params): Completable {
-
-        return dataSourceFactory.local().updateMovie(params)
+            val remoteMovies = remoteDataSource.getUpcomingMovies()
+            localDataSource.saveUpcomingMovies(remoteMovies)
+            emit(remoteMovies.map { it.toDomain() })
+        }
     }
 
+    private fun MovieData.toDomain(): MovieDomain {
+        return MovieDomain(
+            adult,
+            backdrop_path,
+            genre_ids,
+            id,
+            original_language,
+            original_title,
+            overview,
+            popularity,
+            poster_path,
+            release_date,
+            title,
+            video,
+            vote_average,
+            vote_count
+        )
+    }
 }
+

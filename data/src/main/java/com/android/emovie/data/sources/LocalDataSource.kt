@@ -1,13 +1,14 @@
 package com.android.emovie.data.sources
 
 import com.android.emovie.data.model.MovieData
-import com.android.emovie.domain.usecases.UpdateMovieUseCase
-import io.reactivex.Completable
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
+    suspend fun getLatestMovies(): List<MovieData>
+    suspend fun getPopularMovies(): List<MovieData>
+    suspend fun getUpcomingMovies(): List<MovieData>
 
-    fun updateMovie(params: UpdateMovieUseCase.Params): Completable
-    fun getMovies(): Observable<List<MovieData>>
-    fun saveMovies(list: List<MovieData>): Completable
+    suspend fun saveLatestMovies(movies : List<MovieData>)
+    suspend fun savePopularMovies(movies : List<MovieData>)
+    suspend fun saveUpcomingMovies(movies : List<MovieData>)
 }

@@ -3,37 +3,36 @@ package com.android.emovie.ui.movieList
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.emovie.R
 import com.android.emovie.databinding.FragmentMovieListBinding
-import com.android.emovie.databinding.RowItemMovieBinding
-import com.android.emovie.ui.Movie
-import com.android.emovie.ui.MovieDiffUtil
-import com.android.emovie.ui.MovieViewHolder
+import com.android.emovie.ui.MovieRecyclerViewAdapter
 import com.android.emovie.ui.MovieViewModel
-import com.android.emovie.ui.zcustom.RecyclerViewAdapter
-import com.android.emovie.ui.zcustom.ViewHolder
-import com.android.emovie.utils.*
+import com.android.emovie.utils.getErrorString
+import com.android.emovie.utils.makeGone
+import com.android.emovie.utils.makeVisible
+import com.android.emovie.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class MovieListFragment : Fragment() {
 
-    private val viewModel: MovieViewModel by navGraphViewModels(R.id.main_nav_graph) {
-        defaultViewModelProviderFactory
-    }
+    private val viewModel: MovieViewModel by viewModels()
 
-    private lateinit var binding: FragmentMovieListBinding
-
+    private var _binding: FragmentMovieListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
+        viewModel.getLatestMovies()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -42,15 +41,17 @@ class MovieListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         return when (item.itemId) {
-
             R.id.sort_by_popular -> {
-                viewModel.sortByPopular()
+                viewModel.getPopularMovies()
                 true
             }
-            R.id.sort_by_favourites -> {
-                viewModel.sortByFavourites()
+            R.id.sort_by_latest -> {
+                viewModel.getLatestMovies()
+                true
+            }
+            R.id.sort_by_upcoming -> {
+                viewModel.getUpcomingMovies()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -61,66 +62,43 @@ class MovieListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        binding = FragmentMovieListBinding.inflate(inflater)
-        return binding.root
+    ): View {
+        return FragmentMovieListBinding.inflate(inflater).let {
+            _binding = it
+            binding.root
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val movieAdapter = object : RecyclerViewAdapter<Movie>(MovieDiffUtil()) {
-            override fun getLayoutRes(model: Movie): Int {
-
-                return R.layout.row_item_movie
-            }
-
-            override fun getViewHolder(
-                view: View,
-                recyclerViewAdapter: RecyclerViewAdapter<Movie>
-            ): ViewHolder<Movie> {
-                return MovieViewHolder(RowItemMovieBinding.bind(view)) {
-
-                    val action =
-                        MovieListFragmentDirections.actionMovieListFragmentToMovieDetailFragment(it)
-                    findNavController().navigateSafe(action)
-
-
-                }
-            }
-
+        val movieAdapter = MovieRecyclerViewAdapter {
+            val action = MovieListFragmentDirections.toMovieDetails(it)
+            findNavController().navigate(action)
         }
-
 
         binding.rvMovieCatalog.apply {
             adapter = movieAdapter
             layoutManager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
         }
 
-
-        viewModel.movieList.observe(viewLifecycleOwner, Observer { result ->
-
-            when (result) {
-
-                Result.Loading -> {
-                    binding.progressBar.makeVisible()
-                }
-
-                is Result.Success -> {
-                    binding.progressBar.makeGone().also {
-                        movieAdapter.submitList(result.data)
-                    }
-                }
-
-                is Result.Error -> {
+        viewModel.viewState.observe(viewLifecycleOwner) { viewState ->
+            when (viewState) {
+                MovieViewModel.ViewState.Loading -> binding.progressBar.makeVisible()
+                is MovieViewModel.ViewState.Content -> {
+                    movieAdapter.submitList(viewState.movies)
                     binding.progressBar.makeGone()
-                    toast(result.error.localizedMessage)
+                }
+                is MovieViewModel.ViewState.Error -> {
+                    binding.progressBar.makeGone()
+                    toast(getErrorString(viewState.msg))
                 }
             }
-
-
-        })
+        }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

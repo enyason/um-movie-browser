@@ -1,10 +1,18 @@
-package com.android.emovie.data.model
+package com.android.emovie.local.model
 
-data class MovieData(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.android.shopmax.local.typeConverters.GenreIdsConverter
+
+@Entity(tableName = "upcoming_movie_table")
+data class UpcomingMovieLocal(
+    @PrimaryKey
+    var id: Int,
     val adult: Boolean,
     val backdrop_path: String,
+    @field:TypeConverters(GenreIdsConverter::class)
     val genre_ids: List<Int>,
-    val id: Int,
     val original_language: String,
     val original_title: String,
     val overview: String,

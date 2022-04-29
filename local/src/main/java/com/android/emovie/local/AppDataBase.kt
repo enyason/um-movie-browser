@@ -2,10 +2,12 @@ package com.android.emovie.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.android.emovie.local.model.MovieLocal
+import com.android.emovie.local.model.LatestMovieLocal
+import com.android.emovie.local.model.PopularMovieLocal
+import com.android.emovie.local.model.UpcomingMovieLocal
 
 @Database(
-    entities = [MovieLocal::class],
+    entities = [LatestMovieLocal::class, PopularMovieLocal::class, UpcomingMovieLocal::class],
     version = 1,
     exportSchema = false
 )

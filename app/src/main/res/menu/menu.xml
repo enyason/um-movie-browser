@@ -6,16 +6,23 @@
         android:title="@string/sort_by"
         app:showAsAction="collapseActionView">
         <menu>
+
             <item
-                android:id="@+id/sort_by_popular"
+                android:id="@+id/sort_by_latest"
                 android:orderInCategory="1"
-                android:title="@string/text_all"
+                android:title="@string/latest"
                 app:showAsAction="never" />
 
             <item
-                android:id="@+id/sort_by_favourites"
+                android:id="@+id/sort_by_popular"
                 android:orderInCategory="1"
-                android:title="@string/favorites"
+                android:title="@string/popular"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/sort_by_upcoming"
+                android:orderInCategory="1"
+                android:title="@string/upcoming"
                 app:showAsAction="never" />
 
         </menu>

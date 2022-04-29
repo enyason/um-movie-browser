@@ -40,22 +40,6 @@ fun ImageView.loadImage(image: Any?, placeholder: Int = 0, circular: Boolean = f
         .into(this)
 }
 
-fun View.snack(
-    message: String?,
-    length: Int = Snackbar.LENGTH_SHORT,
-    actionText: String? = null,
-    actionCallBack: (() -> Unit)? = null
-) {
-    Snackbar.make(this, message.toString(), length).apply {
-        actionCallBack?.let {
-            actionText?.let {
-                setAction(actionText) {
-                    actionCallBack()
-                }
-            }
-        }
-    }.show()
-}
 
 fun Activity.toast(message: String?, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, length).show()
@@ -100,4 +84,13 @@ fun <T> MutableLiveData<T>.asLiveData() = this as LiveData<T>
 
 fun NavController.navigateSafe(direction: NavDirections) {
     currentDestination?.getAction(direction.actionId)?.let { navigate(direction) }
+}
+
+fun Fragment.getErrorString(data: Any): String {
+    return when (data) {
+        is Int -> getString(data)
+        is String -> data
+        else -> ""
+    }
+
 }

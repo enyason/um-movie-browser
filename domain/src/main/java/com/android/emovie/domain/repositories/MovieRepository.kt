@@ -1,15 +1,10 @@
 package com.android.emovie.domain.repositories
 
 import com.android.emovie.domain.models.MovieDomain
-import com.android.emovie.domain.usecases.GetMoviesRemoteUseCase
-import com.android.emovie.domain.usecases.GetMoviesUseCase
-import com.android.emovie.domain.usecases.UpdateMovieUseCase
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
-    fun getMovies():Observable<List<MovieDomain>>
-    fun getMoviesFromRemote(params: GetMoviesRemoteUseCase.Params):Single<List<MovieDomain>>
-    fun updateMovie(params: UpdateMovieUseCase.Params): Completable
+    fun getLatestMovies(): Flow<List<MovieDomain>>
+    fun getPopularMovies(): Flow<List<MovieDomain>>
+    fun getUpcomingMovies(): Flow<List<MovieDomain>>
 }

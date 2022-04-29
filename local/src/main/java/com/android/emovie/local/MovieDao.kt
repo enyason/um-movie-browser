@@ -1,21 +1,29 @@
 package com.android.emovie.local
 
 import androidx.room.*
-import com.android.emovie.local.model.MovieLocal
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
+import com.android.emovie.local.model.LatestMovieLocal
+import com.android.emovie.local.model.PopularMovieLocal
+import com.android.emovie.local.model.UpcomingMovieLocal
 
 @Dao
 interface MovieDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun saveMovies(movie: List<MovieLocal>): Completable
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveLatestMovies(movie: List<LatestMovieLocal>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun savePopularMovies(movie: List<PopularMovieLocal>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveUpcomingMovies(movie: List<UpcomingMovieLocal>)
 
 
-    @Query("UPDATE movie_table SET isFavourite=:isFav WHERE id = :movieId")
-    fun updateMovie(movieId: Int, isFav: Boolean): Completable
+    @Query("SELECT * FROM latest_movie_table")
+    suspend fun getLatestMovies(): List<LatestMovieLocal>
 
-    @Query("SELECT * FROM movie_table")
-    fun getMovies(): Observable<List<MovieLocal>>
+    @Query("SELECT * FROM popular_movie_table")
+    suspend fun getPopularMovies(): List<PopularMovieLocal>
+
+    @Query("SELECT * FROM upcoming_movie_table")
+    suspend fun getUpcomingMovies(): List<UpcomingMovieLocal>
 }
