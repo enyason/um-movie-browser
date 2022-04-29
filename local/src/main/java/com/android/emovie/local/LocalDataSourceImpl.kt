@@ -3,7 +3,6 @@ package com.android.emovie.local
 import com.android.emovie.data.model.MovieData
 import com.android.emovie.data.sources.LocalDataSource
 import com.android.emovie.local.model.LatestMovieLocal
-import com.android.emovie.local.model.MovieLocal
 import com.android.emovie.local.model.PopularMovieLocal
 import com.android.emovie.local.model.UpcomingMovieLocal
 import javax.inject.Inject

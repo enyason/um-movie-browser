@@ -3,7 +3,7 @@ package com.android.emovie.local.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.android.shopmax.local.typeConverters.GenreIdsConverter
+import com.android.emovie.local.typeConverters.GenreIdsConverter
 
 @Entity(tableName = "latest_movie_table")
 data class LatestMovieLocal(

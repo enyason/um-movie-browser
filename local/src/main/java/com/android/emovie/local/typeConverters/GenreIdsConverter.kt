@@ -1,4 +1,4 @@
-package com.android.shopmax.local.typeConverters
+package com.android.emovie.local.typeConverters
 
 import androidx.room.TypeConverter
 
@@ -11,14 +11,10 @@ class GenreIdsConverter {
 
     @TypeConverter
     fun fromList(images: List<Int>): String {
-
         var str: String = " "
-
-        images.forEachIndexed { index, s ->
-            str += images[index].toString().plus(" ")
-
+        images.forEach { value->
+            str += value.toString().plus(" ")
         }
-
         return str.trim()
     }
 }
