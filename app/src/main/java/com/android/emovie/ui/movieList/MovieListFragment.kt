@@ -17,6 +17,7 @@ import com.android.emovie.utils.makeGone
 import com.android.emovie.utils.makeVisible
 import com.android.emovie.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -43,14 +44,17 @@ class MovieListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.sort_by_popular -> {
+                requireActivity().materialToolbar.title = getString(R.string.popular)
                 viewModel.getPopularMovies()
                 true
             }
             R.id.sort_by_latest -> {
+                requireActivity().materialToolbar.title = getString(R.string.latest)
                 viewModel.getLatestMovies()
                 true
             }
             R.id.sort_by_upcoming -> {
+                requireActivity().materialToolbar.title = getString(R.string.upcoming)
                 viewModel.getUpcomingMovies()
                 true
             }

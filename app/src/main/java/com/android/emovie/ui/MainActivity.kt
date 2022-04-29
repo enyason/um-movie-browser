@@ -9,6 +9,7 @@ import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.android.emovie.R
 import com.android.emovie.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -25,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.materialToolbar)
+
+        binding.materialToolbar.title = getString(R.string.latest)
 
         navController = findNavController(R.id.main_nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(

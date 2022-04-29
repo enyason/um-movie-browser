@@ -21,9 +21,9 @@ class MovieRepositoryImpl @Inject constructor(
             val localMovies = localDataSource.getLatestMovies().map { it.toDomain() }
             if (localMovies.isNotEmpty()) emit(localMovies)
 
-            val remoteMovies = remoteDataSource.getLatestMovies()
+            val remoteMovies = remoteDataSource.getLatestMovies().sortedBy { it.id }
             localDataSource.saveLatestMovies(remoteMovies)
-            emit(remoteMovies.map { it.toDomain() })
+            if (remoteMovies != localMovies) emit(remoteMovies.map { it.toDomain() })
         }
     }
 
@@ -32,7 +32,7 @@ class MovieRepositoryImpl @Inject constructor(
             val localMovies = localDataSource.getPopularMovies().map { it.toDomain() }
             if (localMovies.isNotEmpty()) emit(localMovies)
 
-            val remoteMovies = remoteDataSource.getPopularMovies()
+            val remoteMovies = remoteDataSource.getPopularMovies().sortedBy { it.id }
             localDataSource.savePopularMovies(remoteMovies)
             emit(remoteMovies.map { it.toDomain() })
         }
@@ -43,7 +43,7 @@ class MovieRepositoryImpl @Inject constructor(
             val localMovies = localDataSource.getUpcomingMovies().map { it.toDomain() }
             if (localMovies.isNotEmpty()) emit(localMovies)
 
-            val remoteMovies = remoteDataSource.getUpcomingMovies()
+            val remoteMovies = remoteDataSource.getUpcomingMovies().sortedBy { it.id }
             localDataSource.saveUpcomingMovies(remoteMovies)
             emit(remoteMovies.map { it.toDomain() })
         }

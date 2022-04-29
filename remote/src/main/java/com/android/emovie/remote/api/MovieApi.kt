@@ -11,7 +11,7 @@ interface MovieApi {
     suspend fun getPopularMovies(): MovieApiResponse
 
     @GET("3/discover/movie")
-    suspend fun getLatestMovies(@Query("release_date.gte") releaseDate: String = "2022"): MovieApiResponse
+    suspend fun getLatestMovies(@Query("release_date.gte") releaseDate: String = "2021"): MovieApiResponse
 
     @GET("3/movie/upcoming")
     suspend fun getUpcomingMovies(): MovieApiResponse
