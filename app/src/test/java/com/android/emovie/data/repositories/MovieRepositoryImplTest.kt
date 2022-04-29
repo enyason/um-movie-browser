@@ -121,7 +121,6 @@ class MovieRepositoryImplTest {
         val flowResult = sut.getLatestMovies().toList()
 
         assertThat(flowResult.size).isEqualTo(1)
-        assertThat(flowResult.first().first().id).isEqualTo(movies.first().id)
         coVerify { localDataSource.saveLatestMovies(any()) }
     }
 }
